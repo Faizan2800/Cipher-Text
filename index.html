@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher</title>
+    <!-- Link to Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: #ff4081;  /* Pinkish color */
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        }
+    </style>
+</head>
+<body class="bg-gray-800 text-white font-sans flex flex-col items-center min-h-screen overflow-auto">
+    <div class="container mx-auto p-4 flex flex-col items-center">
+        <!-- Header (Logo) -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl">Cipher Text</h1>
+        </div>
+        
+    
+        <div class="bg-gray-700 p-6 rounded-lg shadow-lg w-full md:w-96">
+            <form id="cipherForm" class="space-y-6">
+            
+                <div>
+                    <label for="direction" class="block text-lg font-semibold">Action:</label>
+                    <select id="direction" class="w-full p-3 mt-2 bg-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        <option value="encode">Encode</option>
+                        <option value="decode">Decode</option>
+                    </select>
+                </div>
+
+                
+                <div>
+                    <label for="message" class="block text-lg font-semibold">Message:</label>
+                    <input type="text" id="message" class="w-full p-3 mt-2 bg-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="Enter your message">
+                </div>
+
+                
+                <div>
+                    <label for="shift" class="block text-lg font-semibold">Shift Amount:</label>
+                    <input type="number" id="shift" class="w-full p-3 mt-2 bg-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="Enter shift amount">
+                </div>
+
+                
+                <div class="mt-6">
+                    <button type="submit" class="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        
+        <div id="resultArea" class="mt-10 text-lg bg-gray-700 p-6 rounded-lg shadow-lg hidden w-full md:w-96">
+            <p id="resultText" class="text-center"></p>
+        </div>
+    </div>
+
+    <script>
+        function caesarCipher(text, shift, action) {
+            const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`"\'\\ ';
+            let result = '';
+            shift = action === 'decode' ? -shift : shift;
+
+            for (let char of text) {
+                if (alphabet.includes(char)) {
+                    let index = alphabet.indexOf(char);
+                    index = (index + shift + alphabet.length) % alphabet.length;
+                    result += alphabet[index];
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+
+    
+        document.getElementById('cipherForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const direction = document.getElementById('direction').value.toLowerCase();
+            const message = document.getElementById('message').value;
+            const shift = parseInt(document.getElementById('shift').value);
+
+            if (direction !== 'encode' && direction !== 'decode') {
+                alert('Please enter either "encode" or "decode".');
+                return;
+            }
+
+            if (isNaN(shift)) {
+                alert('Please enter a valid shift number.');
+                return;
+            }
+
+            const result = caesarCipher(message, shift, direction);
+            document.getElementById('resultText').textContent = `Here is the ${direction}d result: ${result}`;
+            document.getElementById('resultArea').classList.remove('hidden');
+            window.scrollTo(0, document.body.scrollHeight); 
+        });
+    </script>
+</body>
+</html>
